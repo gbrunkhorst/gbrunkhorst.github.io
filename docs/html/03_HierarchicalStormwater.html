@@ -1,0 +1,2236 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>EnvBayes Notebook #3. Hierarchical Model for Stormwater &#8212; Greg Brunkhorst</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="EnvBayes Notebook #4. Bayesian Sediment Geochronology" href="04_Lead210_Master.html" />
+    <link rel="prev" title="EnvBayes Notebook #2. Documenting a Bayesian Analysis" href="02_DocumentingBayes.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Greg Brunkhorst</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="about.html">
+                    About
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="01_BayesIntro.html">
+   EnvBayes Notebook #1. Introduction to Bayesian Statistics for Environmental Science
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="02_DocumentingBayes.html">
+   EnvBayes Notebook #2. Documenting a Bayesian Analysis
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   EnvBayes Notebook #3.  Hierarchical Model for Stormwater
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="04_Lead210_Master.html">
+   EnvBayes Notebook #4.  Bayesian Sediment Geochronology
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="logo_asymmetric_laplace.html">
+   EnvBayes Logo
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="experience.html">
+   Greg Brunkhorst, P.E.
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/gbrunkhorst/gbrunkhorst.github.io"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/gbrunkhorst/gbrunkhorst.github.io/issues/new?title=Issue%20on%20page%20%2F03_HierarchicalStormwater.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/03_HierarchicalStormwater.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#main-points">
+   Main Points
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#background-and-purpose">
+   1. Background and Purpose
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#background">
+     Background
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data">
+     Data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#purpose">
+     Purpose
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#why-bayes">
+     Why Bayes?
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#model-description">
+   2. Model Description
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#prior-distributions-for-beta">
+     Prior Distributions for
+     <span class="math notranslate nohighlight">
+      \(\beta\)
+     </span>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#likelihood-function-for-c">
+     Likelihood Function for
+     <span class="math notranslate nohighlight">
+      \(C\)
+     </span>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#complete-model-specification">
+     Complete Model Specification
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#results">
+   3. Results
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#discussion">
+   4. Discussion
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#a-mcmc-diagnostics">
+   A.  MCMC Diagnostics
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#b-prior-and-posterior-predictive-checks">
+   B. Prior and Posterior Predictive Checks
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#prior-predictive-check">
+     Prior Predictive Check
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#posterior-predictive-check">
+     Posterior Predictive Check
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#c-sensitivity-to-alternative-specifications">
+   C.  Sensitivity to Alternative Specifications
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#wider-prior-specification">
+     Wider Prior Specification
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#comparison-to-different-likelihood-functions">
+     Comparison to Different Likelihood Functions
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#normal-likelihood">
+       Normal Likelihood
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#lognormal-likelihood">
+       LogNormal Likelihood
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#next-steps">
+   Next Steps
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>EnvBayes Notebook #3.  Hierarchical Model for Stormwater</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#main-points">
+   Main Points
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#background-and-purpose">
+   1. Background and Purpose
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#background">
+     Background
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data">
+     Data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#purpose">
+     Purpose
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#why-bayes">
+     Why Bayes?
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#model-description">
+   2. Model Description
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#prior-distributions-for-beta">
+     Prior Distributions for
+     <span class="math notranslate nohighlight">
+      \(\beta\)
+     </span>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#likelihood-function-for-c">
+     Likelihood Function for
+     <span class="math notranslate nohighlight">
+      \(C\)
+     </span>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#complete-model-specification">
+     Complete Model Specification
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#results">
+   3. Results
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#discussion">
+   4. Discussion
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#a-mcmc-diagnostics">
+   A.  MCMC Diagnostics
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#b-prior-and-posterior-predictive-checks">
+   B. Prior and Posterior Predictive Checks
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#prior-predictive-check">
+     Prior Predictive Check
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#posterior-predictive-check">
+     Posterior Predictive Check
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#c-sensitivity-to-alternative-specifications">
+   C.  Sensitivity to Alternative Specifications
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#wider-prior-specification">
+     Wider Prior Specification
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#comparison-to-different-likelihood-functions">
+     Comparison to Different Likelihood Functions
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#normal-likelihood">
+       Normal Likelihood
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#lognormal-likelihood">
+       LogNormal Likelihood
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#next-steps">
+   Next Steps
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="envbayes-notebook-3-hierarchical-model-for-stormwater">
+<h1>EnvBayes Notebook #3.  Hierarchical Model for Stormwater<a class="headerlink" href="#envbayes-notebook-3-hierarchical-model-for-stormwater" title="Permalink to this headline">#</a></h1>
+<section id="main-points">
+<h2>Main Points<a class="headerlink" href="#main-points" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>Hierarchical models employ adaptive priors for categorical data, which enable the sharing of information across categories.</p></li>
+<li><p>Adaptive priors can be especially useful for datasets with varying sample counts across categories.</p></li>
+<li><p>This notebook presents a hierarchical model for stormwater data using a gamma likelihood (gamma generalized linear model)</p></li>
+</ul>
+</section>
+<section id="background-and-purpose">
+<h2>1. Background and Purpose<a class="headerlink" href="#background-and-purpose" title="Permalink to this headline">#</a></h2>
+<p>This notebook presents a hierarchical model for estimating nutrient concentrations in stormwater drawing from the radon model example (e.g., see <a class="reference external" href="https://docs.pymc.io/en/v3/pymc-examples/examples/case_studies/multilevel_modeling.html">here</a>) from Gelman and Hill, 2006.</p>
+<section id="background">
+<h3>Background<a class="headerlink" href="#background" title="Permalink to this headline">#</a></h3>
+<p>Nutrients from fertilizer, agricultural waste, natural processes, and other sources enter water bodies through stormwater runoff and impact the aquatic ecosystems.  For example, excess nutrient loading can increase the intensity of summer algal blooms which in turn impact oxygen levels in a water body.  Predicting the concentrations of nutrients in stormwater can be helpful for modeling and managing watersheds and receiving water bodies.</p>
+<p>Stormwater discharges can have strong geographic effects.  Nutrient loads are impacted by land usage within the catchment area for a stormwater outfall, with different loads associated with industrial, residential, agricultural, and forested landuse types.</p>
+<p>For this notebook example, stormwater data were gathered from multiple previous studies.  Stormwater outfalls were grouped in 12 geographical regions within a watershed to capture potential area-wide variations in nutrient loading (direct land use information was not available) and estimate nutrient concentrations in stormwater entering different areas of the harbor.</p>
+</section>
+<section id="data">
+<h3>Data<a class="headerlink" href="#data" title="Permalink to this headline">#</a></h3>
+<p>This example dataset comes from an urban harbor nutrient loading study in the Pacific Northwest.  The study used historical data collected from multiple sources.  As such, the data have variable sample counts across categories.  We will analyze nitrate in stormwater for this example analysis.  These data were part of a real study, but the place names have been removed for this simplified example.</p>
+<p>Here is a summary of the data:</p>
+<p>Imports</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.lines</span> <span class="k">as</span> <span class="nn">mlines</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="n">custom_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;axes.spines.right&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;axes.spines.top&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;ticks&quot;</span><span class="p">,</span> <span class="n">rc</span><span class="o">=</span><span class="n">custom_params</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">pymc</span> <span class="k">as</span> <span class="nn">pm</span>
+
+<span class="kn">import</span> <span class="nn">arviz</span> <span class="k">as</span> <span class="nn">az</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.colheader_justify&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">percentile</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">percentile_</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">percentile_</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="si">%s</span><span class="s1"> Percentile&#39;</span> <span class="o">%</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="n">percentile_</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">&#39;data/nitrate_nitrite_stormwater.xlsx&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;Detect&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Detect_Y_N</span><span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s1">&#39;Y&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">})</span>
+<span class="n">areas</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Area</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">areas</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="n">idxs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">areas</span><span class="p">)))</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;Area_idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Area</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">areas</span><span class="p">,</span> <span class="n">idxs</span><span class="p">)))</span>
+
+<span class="n">analyte</span><span class="o">=</span><span class="s1">&#39;Nitrate&#39;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">Analyte</span><span class="o">==</span><span class="n">analyte</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Plot Data</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">box_strip</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">analyte</span><span class="p">,</span> <span class="n">category</span><span class="p">):</span>
+    <span class="n">plot_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">Analyte</span><span class="o">==</span><span class="n">analyte</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">category</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">plot_data</span><span class="p">,</span> <span class="n">fliersize</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">stripplot</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">plot_data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">tick</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">():</span>
+        <span class="n">tick</span><span class="o">.</span><span class="n">set_rotation</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Concentation (ug/L)&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">hist</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">analyte</span><span class="p">):</span>
+    <span class="n">plot_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">Analyte</span><span class="o">==</span><span class="n">analyte</span><span class="p">]</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">plot_data</span><span class="p">,</span>   <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Concentation (ug/L)&#39;</span><span class="p">)</span>
+
+
+<span class="n">categories</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Hist&#39;</span><span class="p">,</span> <span class="s1">&#39;Area&#39;</span><span class="p">]</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">category</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">categories</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">category</span><span class="o">==</span><span class="s1">&#39;Hist&#39;</span><span class="p">:</span>
+        <span class="n">hist</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">analyte</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;All Data&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">box_strip</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">analyte</span><span class="p">,</span> <span class="n">category</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;By &#39;</span><span class="o">+</span><span class="n">category</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Stormwater Nitrate Data&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/03_HierarchicalStormwater_10_0.png" src="_images/03_HierarchicalStormwater_10_0.png" />
+</div>
+</div>
+<p>Summary statistics for all data combined.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_summary</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">by</span><span class="p">):</span>
+    <span class="n">summary</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">by</span><span class="o">+</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">by</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="s1">&#39;std&#39;</span><span class="p">,</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">percentile</span><span class="p">(</span><span class="mi">95</span><span class="p">),</span> <span class="s1">&#39;max&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">Value</span>
+    <span class="n">summary</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="s1">&#39; 95 Percentile&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;Mean&#39;</span><span class="p">,</span> <span class="s1">&#39;StDev&#39;</span><span class="p">,</span> <span class="s1">&#39;Median&#39;</span><span class="p">,</span> <span class="s1">&#39;95th Pct&#39;</span><span class="p">,</span> <span class="s1">&#39;Max&#39;</span><span class="p">])),</span>
+        <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+    <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;CV&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;StDev&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;Mean&#39;</span><span class="p">]</span>
+
+    <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;StdErr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">summary</span><span class="o">.</span><span class="n">StDev</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;Mean_5%CL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;Mean&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">summary</span><span class="o">.</span><span class="n">StdErr</span> <span class="o">*</span> <span class="mf">1.64485</span>
+    <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;Mean_95%CL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;Mean&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">summary</span><span class="o">.</span><span class="n">StdErr</span> <span class="o">*</span> <span class="mf">1.64485</span>
+    <span class="k">return</span> <span class="n">summary</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summary_pooled</span> <span class="o">=</span> <span class="n">make_summary</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Analyte&#39;</span><span class="p">])</span>
+<span class="n">summary_pooled</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: center;">
+      <th></th>
+      <th>n</th>
+      <th>Mean</th>
+      <th>StDev</th>
+      <th>Median</th>
+      <th>95th Pct</th>
+      <th>Max</th>
+      <th>CV</th>
+      <th>StdErr</th>
+      <th>Mean_5%CL</th>
+      <th>Mean_95%CL</th>
+    </tr>
+    <tr>
+      <th>Analyte</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Nitrate</th>
+      <td>176</td>
+      <td>0.85</td>
+      <td>0.78</td>
+      <td>0.74</td>
+      <td>1.77</td>
+      <td>6.13</td>
+      <td>0.92</td>
+      <td>0.06</td>
+      <td>0.75</td>
+      <td>0.94</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Summary statistics for data grouped by area.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summary_area</span> <span class="o">=</span> <span class="n">make_summary</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Analyte&#39;</span><span class="p">,</span> <span class="s1">&#39;Area&#39;</span><span class="p">])</span>
+<span class="n">summary_area</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: center;">
+      <th></th>
+      <th></th>
+      <th>n</th>
+      <th>Mean</th>
+      <th>StDev</th>
+      <th>Median</th>
+      <th>95th Pct</th>
+      <th>Max</th>
+      <th>CV</th>
+      <th>StdErr</th>
+      <th>Mean_5%CL</th>
+      <th>Mean_95%CL</th>
+    </tr>
+    <tr>
+      <th>Analyte</th>
+      <th>Area</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="12" valign="top">Nitrate</th>
+      <th>Area_A</th>
+      <td>9</td>
+      <td>0.82</td>
+      <td>1.01</td>
+      <td>0.16</td>
+      <td>2.39</td>
+      <td>2.81</td>
+      <td>1.22</td>
+      <td>0.34</td>
+      <td>0.27</td>
+      <td>1.38</td>
+    </tr>
+    <tr>
+      <th>Area_B</th>
+      <td>4</td>
+      <td>0.70</td>
+      <td>0.68</td>
+      <td>0.62</td>
+      <td>1.40</td>
+      <td>1.45</td>
+      <td>0.98</td>
+      <td>0.34</td>
+      <td>0.13</td>
+      <td>1.26</td>
+    </tr>
+    <tr>
+      <th>Area_C</th>
+      <td>14</td>
+      <td>0.33</td>
+      <td>0.18</td>
+      <td>0.32</td>
+      <td>0.56</td>
+      <td>0.57</td>
+      <td>0.55</td>
+      <td>0.05</td>
+      <td>0.25</td>
+      <td>0.40</td>
+    </tr>
+    <tr>
+      <th>Area_D</th>
+      <td>1</td>
+      <td>0.07</td>
+      <td>NaN</td>
+      <td>0.07</td>
+      <td>0.07</td>
+      <td>0.07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Area_E</th>
+      <td>9</td>
+      <td>1.14</td>
+      <td>1.93</td>
+      <td>0.50</td>
+      <td>4.31</td>
+      <td>6.13</td>
+      <td>1.70</td>
+      <td>0.64</td>
+      <td>0.08</td>
+      <td>2.19</td>
+    </tr>
+    <tr>
+      <th>Area_F</th>
+      <td>4</td>
+      <td>0.52</td>
+      <td>0.61</td>
+      <td>0.30</td>
+      <td>1.25</td>
+      <td>1.39</td>
+      <td>1.18</td>
+      <td>0.30</td>
+      <td>0.02</td>
+      <td>1.02</td>
+    </tr>
+    <tr>
+      <th>Area_G</th>
+      <td>4</td>
+      <td>0.19</td>
+      <td>0.12</td>
+      <td>0.20</td>
+      <td>0.29</td>
+      <td>0.29</td>
+      <td>0.65</td>
+      <td>0.06</td>
+      <td>0.09</td>
+      <td>0.28</td>
+    </tr>
+    <tr>
+      <th>Area_H</th>
+      <td>10</td>
+      <td>1.04</td>
+      <td>1.54</td>
+      <td>0.35</td>
+      <td>3.81</td>
+      <td>4.77</td>
+      <td>1.48</td>
+      <td>0.49</td>
+      <td>0.24</td>
+      <td>1.85</td>
+    </tr>
+    <tr>
+      <th>Area_I</th>
+      <td>108</td>
+      <td>0.97</td>
+      <td>0.54</td>
+      <td>1.00</td>
+      <td>1.71</td>
+      <td>2.50</td>
+      <td>0.55</td>
+      <td>0.05</td>
+      <td>0.89</td>
+      <td>1.06</td>
+    </tr>
+    <tr>
+      <th>Area_J</th>
+      <td>6</td>
+      <td>0.43</td>
+      <td>0.36</td>
+      <td>0.44</td>
+      <td>0.86</td>
+      <td>0.89</td>
+      <td>0.83</td>
+      <td>0.15</td>
+      <td>0.19</td>
+      <td>0.67</td>
+    </tr>
+    <tr>
+      <th>Area_K</th>
+      <td>5</td>
+      <td>0.54</td>
+      <td>0.48</td>
+      <td>0.34</td>
+      <td>1.18</td>
+      <td>1.29</td>
+      <td>0.88</td>
+      <td>0.21</td>
+      <td>0.19</td>
+      <td>0.90</td>
+    </tr>
+    <tr>
+      <th>Area_L</th>
+      <td>2</td>
+      <td>0.33</td>
+      <td>0.23</td>
+      <td>0.33</td>
+      <td>0.47</td>
+      <td>0.49</td>
+      <td>0.70</td>
+      <td>0.16</td>
+      <td>0.06</td>
+      <td>0.60</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Key observations of the dataset:</p>
+<ul class="simple">
+<li><p>The sample counts are highly variable across categories.  For example, for nitrate, Area I has the most data with 108 data points for nitrate, and Area D has only one data point.</p></li>
+<li><p>The distribution of data is positively skewed with occasional high concentrations in some areas.</p></li>
+<li><p>Much of the difference in nutrient concentration between areas could be attributable to noise.  However, some geographic areas appear to show trends compared to other geographic areas.</p></li>
+</ul>
+<p>Because the project team is interested in estimating concentrations for each subarea, we will use a model that can account for both the noise in the overall dataset and the samples counts and results in individual areas.</p>
+</section>
+<section id="purpose">
+<h3>Purpose<a class="headerlink" href="#purpose" title="Permalink to this headline">#</a></h3>
+<p>The purpose of this analysis is to estimate future mean concentrations of nitrate in different areas and the uncertainty in the estimate.</p>
+</section>
+<section id="why-bayes">
+<h3>Why Bayes?<a class="headerlink" href="#why-bayes" title="Permalink to this headline">#</a></h3>
+<p>A Bayesian approach was selected for this analysis because:</p>
+<ul class="simple">
+<li><p>It provides uncertainty estimates considering all information in the model.</p></li>
+<li><p>It allows a hierarchical model structure can share information across categories in the dataset.</p></li>
+<li><p>It can account for positive-only right-skewed data.</p></li>
+</ul>
+<p>ANOVA is a frequentist method for comparing data across categories.  The primary reason that ANOVA is not used for this analysis is that it is a hypothesis testing framework.  The purpose of this analysis is <em>estimation with uncertainty,</em> rather than <em>hypothesis testing.</em>  Moreover, the parameter estimation function of ANOVA does not account skewed or hierarchical data.</p>
+<p>For reference, below are summary AOV tables from the Python StatsModels package.  The results suggest that it is valid to cautiously account for geographic area when interpreting the data (<span class="math notranslate nohighlight">\(PR(&lt;F)\)</span> is about 5%).</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="n">aov_tables</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s1">&#39;Value ~ Area&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">Analyte</span><span class="o">==</span><span class="n">analyte</span><span class="p">])</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">aov_table</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">anova_lm</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">aov_table</span><span class="p">[</span><span class="s1">&#39;Analyte&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">analyte</span>
+<span class="n">aov_tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aov_table</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">aov_tables</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: center;">
+      <th></th>
+      <th>sum_sq</th>
+      <th>df</th>
+      <th>F</th>
+      <th>PR(&gt;F)</th>
+      <th>Analyte</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Area</th>
+      <td>11.559</td>
+      <td>11.0</td>
+      <td>1.826</td>
+      <td>0.053</td>
+      <td>Nitrate</td>
+    </tr>
+    <tr>
+      <th>Residual</th>
+      <td>94.390</td>
+      <td>164.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Nitrate</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Plotting Functions Used in the Code Later</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">posterior_forest_area_plot</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">factor_var</span> <span class="o">=</span> <span class="s1">&#39;1|Area&#39;</span><span class="p">,</span> <span class="n">analyte</span> <span class="o">=</span> <span class="s1">&#39;Nitrate&#39;</span><span class="p">,</span> 
+    <span class="n">observed_means_all</span> <span class="o">=</span> <span class="s1">&#39;means&#39;</span><span class="p">,</span> <span class="n">posterior_posterior_pred</span> <span class="o">=</span> <span class="s1">&#39;posterior&#39;</span><span class="p">,</span> <span class="n">CIs</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Modeled and Observed Means with Confidence Intervals&#39;</span><span class="p">):</span>
+    
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Area</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="n">cols</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">posterior_posterior_pred</span> <span class="o">==</span> <span class="s1">&#39;posterior&#39;</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">idata</span><span class="o">.</span><span class="n">posterior</span><span class="p">[</span><span class="n">factor_var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4000</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">posterior_posterior_pred</span> <span class="o">==</span> <span class="s1">&#39;posterior_pred&#39;</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">idata</span><span class="o">.</span><span class="n">posterior_predictive</span><span class="p">[</span><span class="n">factor_var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4000</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">posterior_posterior_pred</span> <span class="o">==</span> <span class="s1">&#39;posterior_pred_log&#39;</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">idata</span><span class="o">.</span><span class="n">posterior_predictive</span><span class="p">[</span><span class="n">factor_var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4000</span><span class="p">,</span><span class="mi">12</span><span class="p">)),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;check posterior_posterior_pred&#39;</span><span class="p">)</span>
+
+    <span class="c1"># main forest plot</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+    <span class="n">az</span><span class="o">.</span><span class="n">plot_forest</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="n">hdi_prob</span><span class="o">=</span><span class="mf">.9</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+    <span class="c1"># add model means</span>
+    <span class="c1"># mean_groups = idata.posterior[&#39;area_mu_mu&#39;].values.mean()</span>
+    <span class="c1"># plt.axvline(mean_groups,  linestyle=&#39;:&#39;, label=&#39;Model Mean for All Areas\n(Hyperprior [area_mu_mu] Mean)&#39;)</span>
+    <span class="n">summary_area</span> <span class="o">=</span> <span class="n">make_summary</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Analyte&#39;</span><span class="p">,</span> <span class="s1">&#39;Area&#39;</span><span class="p">])</span>  
+    <span class="n">y_ticks</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">observed_means_all</span> <span class="o">==</span> <span class="s1">&#39;means&#39;</span><span class="p">:</span>
+        <span class="c1"># add observed means</span>
+        <span class="n">mean_vals</span>  <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Area&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
+        
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">mean_vals</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_ticks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Observed Group Mean and Count&#39;</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> 
+                    <span class="n">zorder</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        
+        <span class="c1"># add sample count labels</span>
+        
+        <span class="n">ns</span> <span class="o">=</span> <span class="n">summary_area</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">analyte</span><span class="p">,</span><span class="s1">&#39;n&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">mean_val</span><span class="p">,</span> <span class="n">y_tick</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">mean_vals</span><span class="p">,</span> <span class="n">y_ticks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ns</span><span class="p">):</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">mean_val</span><span class="o">+</span><span class="mf">.03</span><span class="p">,</span> <span class="n">y_tick</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;n=</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+    
+    <span class="k">elif</span> <span class="n">observed_means_all</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+        <span class="c1"># add observed</span>
+        <span class="n">y_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">areas</span><span class="p">,</span> <span class="n">y_ticks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Value</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Area</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">y_dict</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Observed&#39;</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+    
+    <span class="k">elif</span> <span class="n">observed_means_all</span> <span class="o">==</span> <span class="s1">&#39;medians&#39;</span><span class="p">:</span>
+
+        <span class="c1"># add observed medians</span>
+        <span class="n">median_vals</span>  <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Area&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">median</span><span class="p">()[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">median_vals</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_ticks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Observed Group Median and Count&#39;</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> 
+                    <span class="n">zorder</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="c1"># add sample count labels</span>
+        
+        <span class="n">ns</span> <span class="o">=</span> <span class="n">summary_area</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">analyte</span><span class="p">,</span><span class="s1">&#39;n&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">median_val</span><span class="p">,</span> <span class="n">y_tick</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">median_vals</span><span class="p">,</span> <span class="n">y_ticks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ns</span><span class="p">):</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">median_val</span><span class="o">+</span><span class="mf">.03</span><span class="p">,</span> <span class="n">y_tick</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;n=</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">observed_means_all</span> <span class="o">==</span> <span class="s1">&#39;all_medians&#39;</span><span class="p">:</span>
+        <span class="c1"># add observed</span>
+        <span class="n">y_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">areas</span><span class="p">,</span> <span class="n">y_ticks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Value</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Area</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">y_dict</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Observed&#39;</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+    
+   
+
+        <span class="c1"># add observed medians</span>
+        <span class="n">median_vals</span>  <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Area&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">median</span><span class="p">()[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">median_vals</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_ticks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Observed Group Median&#39;</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> 
+                    <span class="n">zorder</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;need observed_means_all param to be &quot;means&quot; or &quot;all&quot;&#39;</span><span class="p">)</span>
+
+
+    <span class="c1"># add global observed mean</span>
+    <span class="n">summary_pooled</span> <span class="o">=</span> <span class="n">make_summary</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Analyte&#39;</span><span class="p">])</span>
+    <span class="n">mean_data</span> <span class="o">=</span> <span class="n">summary_pooled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">analyte</span><span class="p">,</span> <span class="s1">&#39;Mean&#39;</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">mean_data</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Observed Mean (All Data Pooled)&#39;</span><span class="p">)</span>
+
+    
+    <span class="k">if</span> <span class="n">CIs</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y_ticks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mf">.6</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">,</span>
+                    <span class="n">xmin</span> <span class="o">=</span> <span class="n">summary_area</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">analyte</span><span class="p">,</span><span class="s1">&#39;Mean_5%CL&#39;</span><span class="p">],</span> 
+                    <span class="n">xmax</span> <span class="o">=</span> <span class="n">summary_area</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">analyte</span><span class="p">,</span> <span class="s1">&#39;Mean_95%CL&#39;</span><span class="p">],</span> 
+                    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;90% Confidence Interval by Group&#39;</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">y</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span>  <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="n">xmin</span><span class="o">=</span><span class="n">summary_pooled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">analyte</span><span class="p">,</span> <span class="s1">&#39;Mean_5%CL&#39;</span><span class="p">],</span> 
+                    <span class="n">xmax</span><span class="o">=</span><span class="n">summary_pooled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">analyte</span><span class="p">,</span> <span class="s1">&#39;Mean_95%CL&#39;</span><span class="p">],</span> 
+                    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;90% Confidence Interval All Data Pooled&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">summary_pooled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">analyte</span><span class="p">,</span> <span class="s1">&#39;Mean_95%CL&#39;</span><span class="p">]</span><span class="o">+</span><span class="mf">.03</span><span class="p">,</span>
+                    <span class="o">-</span><span class="mi">2</span><span class="p">,</span>  <span class="s1">&#39;CI All Data Pooled&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+
+    <span class="c1"># add legend entries for base forest plot</span>
+    <span class="n">handles</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+
+    <span class="n">handle90</span> <span class="o">=</span> <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[]</span> <span class="p">)</span>
+    <span class="n">handle50</span> <span class="o">=</span> <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> 
+                <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span> <span class="p">)</span>
+    
+    <span class="n">label90</span> <span class="o">=</span> <span class="s1">&#39;Model 90% Highest Density Interval (HDI)&#39;</span>
+    <span class="n">label50</span> <span class="o">=</span> <span class="s1">&#39;Model 50% HDI, o = Median&#39;</span>
+    <span class="n">handles</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">handle50</span><span class="p">)</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">label50</span><span class="p">)</span>
+    <span class="n">handles</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">handle90</span><span class="p">)</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">label90</span><span class="p">)</span>
+    
+    
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mf">.5</span><span class="p">))</span>
+
+    <span class="c1"># adjustments</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Concentration (ug/L)&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_predictive</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">prior_posterior</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">fliersize</span><span class="p">,</span>
+                   <span class="n">conc_limits</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">)):</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mf">2.5</span><span class="p">))</span>
+    
+    <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">plot_data</span><span class="p">[</span><span class="n">prior_posterior</span><span class="p">],</span> <span class="n">element</span><span class="o">=</span><span class="s2">&quot;step&quot;</span><span class="p">,</span>
+                 <span class="n">stat</span><span class="o">=</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">prior_posterior</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">plot_data</span><span class="o">.</span><span class="n">Observed</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">element</span><span class="o">=</span><span class="s2">&quot;step&quot;</span><span class="p">,</span>
+                 <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Observed&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Concentration (ug/L)&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">conc_limits</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">fliersize</span><span class="o">=</span><span class="n">fliersize</span><span class="p">)</span>  
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">conc_limits</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Concentration (ug/L)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="model-description">
+<h2>2. Model Description<a class="headerlink" href="#model-description" title="Permalink to this headline">#</a></h2>
+<p>The model is a regression with one factor: geographic area.</p>
+<div class="math notranslate nohighlight">
+\[
+C = \beta[area] + \epsilon
+\]</div>
+<p><span class="math notranslate nohighlight">\(C\)</span> is the concentration, <span class="math notranslate nohighlight">\(\beta_{area}\)</span> is the regression coefficient indexed by area, and <span class="math notranslate nohighlight">\(\epsilon\)</span> represents the error term around the regression estimate.  The model is fit independently for each chemical.</p>
+<section id="prior-distributions-for-beta">
+<h3>Prior Distributions for <span class="math notranslate nohighlight">\(\beta\)</span><a class="headerlink" href="#prior-distributions-for-beta" title="Permalink to this headline">#</a></h3>
+<p>Adaptive priors will be used for this analysis, so that information can be shared across categories.  This is also called a “partial pooling” model because categorical data is neither completely combined (i.e., no categories), nor completely separated by category (i.e., independent categories).</p>
+<p>The prior for <span class="math notranslate nohighlight">\(\beta[area]\)</span> will be a normal distribution, and the hyperpriors will be normal and exponential distributions:</p>
+<p><span class="math notranslate nohighlight">\(\beta[area] \sim Normal(\mu_{\beta}, \sigma_{\beta})\)</span><br />
+<span class="math notranslate nohighlight">\(\mu_{\beta} \sim Normal(Mean_{data}, SE_{data})\)</span><br />
+<span class="math notranslate nohighlight">\(\sigma_{\beta} \sim Exponential(1)\)</span></p>
+<p><span class="math notranslate nohighlight">\(\mu_{\beta}\)</span> is a Normal distribution with a <span class="math notranslate nohighlight">\(\mu\)</span> equal to the mean of the data and <span class="math notranslate nohighlight">\(\sigma\)</span> equal to the standard error (<span class="math notranslate nohighlight">\(SE\)</span>) of the data, selected to be consistent with the pooled dataset.</p>
+<p><span class="math notranslate nohighlight">\(\sigma_{\beta}\)</span> is the variation across groups.  As <span class="math notranslate nohighlight">\(\sigma_{\beta}\)</span> goes to zero, the model becomes a complete pooling model, and as <span class="math notranslate nohighlight">\(\sigma_{\beta}\)</span> goes to infinity, the model goes toward an unpooled model.  Based on experience with hierarchical models, an exponential distribution with <span class="math notranslate nohighlight">\(\lambda = 1\)</span> is a good starting place for the model.</p>
+<p>Note that normal hyperpriors will be truncated at 0 to provide positive-only support, consistent with concentration data and the gamma likelihood described below.</p>
+<p>This approach can be described as adaptive priors with weakly informative hyperpriors.  The values of the prior parameters that will be specified in the model are as follows:</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summary_pooled</span><span class="p">[[</span><span class="s1">&#39;Mean&#39;</span><span class="p">,</span> <span class="s1">&#39;StdErr&#39;</span> <span class="p">]]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: center;">
+      <th></th>
+      <th>Mean</th>
+      <th>StdErr</th>
+    </tr>
+    <tr>
+      <th>Analyte</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Nitrate</th>
+      <td>0.8485</td>
+      <td>0.0587</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Alternative prior specifications will be compared in Appendix B.</p>
+</section>
+<section id="likelihood-function-for-c">
+<h3>Likelihood Function for <span class="math notranslate nohighlight">\(C\)</span><a class="headerlink" href="#likelihood-function-for-c" title="Permalink to this headline">#</a></h3>
+<p>The likelihood function represents the shape of the error, <span class="math notranslate nohighlight">\(\epsilon\)</span> (i.e., noise or spread) of <span class="math notranslate nohighlight">\(C_{obs}\)</span> around the regression prediction provided by <span class="math notranslate nohighlight">\(\beta[area]\)</span>.  For this analysis, we will use a gamma distributed likelihood.  The gamma distribution has several benefits in this setting, including the following:</p>
+<ul class="simple">
+<li><p>It has positive-only distribution support, consistent with the physical properties of concentrations.</p></li>
+<li><p>It has positive-skew, consistent with the dataset (and many environmental datasets).</p></li>
+<li><p>The thickness of the upper tail can be varied in shape.</p></li>
+<li><p>The gamma distribution is commonly parameterized as heteroskedastic with a constant coefficient of variation (i.e., standard deviation is proportional to the mean).  This is consistent with observations this dataset.</p></li>
+</ul>
+<p>The gamma distribution will be parameterized with the arithmetic mean, <span class="math notranslate nohighlight">\(\mu\)</span> and the coefficient of variation <span class="math notranslate nohighlight">\(cv\)</span> to be more interpretable for scientists who are accustomed to means and standard deviations.</p>
+<p><span class="math notranslate nohighlight">\(CV \sim Normal(CV_{data}, CV_{data})\)</span><br />
+<span class="math notranslate nohighlight">\(C_{area} \sim Gamma(\mu= \beta[area], \sigma=CV*\beta[area])\)</span></p>
+<p>The model will truncate the normal distribution at 0 for <span class="math notranslate nohighlight">\(CV\)</span> to ensure positive-only values.</p>
+<p>The prior for <span class="math notranslate nohighlight">\(CV\)</span> is weakly informative.  Other likelihood functions will be compared in Appendix B.</p>
+<p>The prior values are as follows:</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summary_pooled</span><span class="p">[[</span><span class="s1">&#39;CV&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: center;">
+      <th></th>
+      <th>CV</th>
+    </tr>
+    <tr>
+      <th>Analyte</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Nitrate</th>
+      <td>0.92</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The model can be referred to as gamma general linearized model with an identity link function and hierarchical priors.</p>
+</section>
+<section id="complete-model-specification">
+<h3>Complete Model Specification<a class="headerlink" href="#complete-model-specification" title="Permalink to this headline">#</a></h3>
+<p>The complete model specification in Pymc3 is as follows.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract prior values for use in the notebook.</span>
+<span class="n">analyte</span> <span class="o">=</span> <span class="s1">&#39;Nitrate&#39;</span>
+
+<span class="c1"># prior values</span>
+<span class="n">mean_data</span> <span class="o">=</span> <span class="n">summary_pooled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">analyte</span><span class="p">,</span> <span class="s1">&#39;Mean&#39;</span><span class="p">]</span>
+<span class="n">se_data</span> <span class="o">=</span> <span class="n">summary_pooled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">analyte</span><span class="p">,</span> <span class="s1">&#39;StdErr&#39;</span><span class="p">]</span>
+<span class="n">cv_data</span> <span class="o">=</span> <span class="n">summary_pooled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">analyte</span><span class="p">,</span> <span class="s1">&#39;CV&#39;</span><span class="p">]</span>
+
+<span class="c1"># observed data</span>
+<span class="n">obs_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">Analyte</span><span class="o">==</span><span class="n">analyte</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Pymc Model</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">hierarchical_stormwater_nitrate</span><span class="p">:</span>
+    <span class="c1"># Data</span>
+    <span class="n">C_obs</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">MutableData</span><span class="p">(</span><span class="s1">&#39;C_obs&#39;</span><span class="p">,</span> <span class="n">obs_data</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">area_idx</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">MutableData</span><span class="p">(</span><span class="s1">&#39;area_idx&#39;</span><span class="p">,</span> <span class="n">obs_data</span><span class="o">.</span><span class="n">Area_idx</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    
+    <span class="c1"># Hyperpriors</span>
+    <span class="n">area_mu_mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">TruncatedNormal</span><span class="p">(</span><span class="s1">&#39;area_mu_mu&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mean_data</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">se_data</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">area_mu_sigma</span><span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Exponential</span><span class="p">(</span><span class="s1">&#39;area_mu_sigma&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> 
+
+    <span class="c1"># Prior</span>
+    <span class="n">area_mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">TruncatedNormal</span><span class="p">(</span><span class="s1">&#39;area_mu&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">area_mu_mu</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">area_mu_sigma</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+                                 <span class="n">shape</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">areas</span><span class="p">))</span>
+
+    <span class="c1"># Prior coefficient of variation</span>
+    <span class="n">cv</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">TruncatedNormal</span><span class="p">(</span><span class="s1">&#39;cv&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">cv_data</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">cv_data</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Likelihood  </span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">area_mu</span><span class="p">[</span><span class="n">area_idx</span><span class="p">]</span>    <span class="c1"># Indexed mu for each datapoint</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">Gamma</span><span class="p">(</span><span class="s1">&#39;C_modeled&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">cv</span><span class="o">*</span><span class="n">mu</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">C_obs</span><span class="p">)</span>
+<span class="n">hierarchical_stormwater_nitrate</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}
+            \begin{array}{rcl}
+            \text{area_mu_mu} &amp;\sim &amp; \operatorname{TruncatedNormal}(0.849,~0.0587,~0,~inf)\\\text{area_mu_sigma} &amp;\sim &amp; \operatorname{Exp}(f())\\\text{area_mu} &amp;\sim &amp; \operatorname{TruncatedNormal}(\text{area_mu_mu},~\text{area_mu_sigma},~0,~inf)\\\text{cv} &amp;\sim &amp; \operatorname{TruncatedNormal}(0.917,~0.917,~0,~inf)\\\text{C_modeled} &amp;\sim &amp; \operatorname{Gamma}(f(\text{area_mu},~\text{cv}),~f(\text{area_mu},~\text{cv}))
+            \end{array}
+            \end{split}\]</div>
+</div>
+</div>
+<p>Graphical summary of the model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pm</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">hierarchical_stormwater_nitrate</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/03_HierarchicalStormwater_37_0.svg" src="_images/03_HierarchicalStormwater_37_0.svg" /></div>
+</div>
+<p>The numbers at the bottom right of the plates show the shape of the variables.  For example, area_mu is being calculated for 12 different areas, whereas, there is only one coefficient of variation (cv) used for the entire model.  176 total samples are fit used to fit the model.</p>
+</section>
+</section>
+<section id="results">
+<h2>3. Results<a class="headerlink" href="#results" title="Permalink to this headline">#</a></h2>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">hierarchical_stormwater_nitrate</span><span class="p">:</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">target_accept</span><span class="o">=</span><span class="mf">.99</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initializing NUTS using jitter+adapt_diag...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multiprocess sampling (4 chains in 4 jobs)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>NUTS: [area_mu_mu, area_mu_sigma, area_mu, cv]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Plot results</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">posterior_forest_area_plot</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">hierarchical_stormwater_nitrate</span><span class="p">,</span>
+            <span class="n">obs_data</span><span class="p">,</span> <span class="n">factor_var</span><span class="o">=</span><span class="s1">&#39;area_mu&#39;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Modeled and Observed Means&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/03_HierarchicalStormwater_42_0.png" src="_images/03_HierarchicalStormwater_42_0.png" />
+</div>
+</div>
+<p>I’ll run through the components of the figure and highlight some main points in the results.</p>
+<ul class="simple">
+<li><p>The blue lines show the results of the statistical model.  These depict the highest density intervals (HDI) for the posterior mean concentration for each area.  90% of the predicted mean falls within the thinner blue line, and 50% of the predicted mean falls within the thicker blue line.  For example, the model predicts that the mean of Area A is between about 0.6 and 1.3 with 90% accuracy, and between 0.7 and 1.0 with 50% accuracy.</p></li>
+<li><p>The red pluses show the mean of the data and the sample count for each area.  This information is helpful for understanding how the model inferred the posterior distributions for each area.</p></li>
+<li><p>Notice that sample count impacts the width of the HDI.  Area I has higher certainty than Area D, for example.</p></li>
+<li><p>Notice that sample count also impacts the degree to which the observed mean impacts the model-predicted mean.  For example, Area C has a higher observed mean than Area D, however, Area C has a lower modeled mean than Area D.  This is because there were 14 data points for Area C and only one data point for Area D, so there is more evidence for a lower concentration in Area C compared to Area D.</p></li>
+<li><p>In all cases, the predicted mean is drawn toward the global mean for all areas, referred to as “shrinkage.”</p></li>
+<li><p>The vertical red dotted line is a mean of all the data.  Shrinkage generally goes to this line.</p></li>
+<li><p>The frequentist 90% confidence intervals (calculated as +/- 1.64 times the standard error) for the individual areas vary from unreasonably narrow (e.g., Area G) to unreasonably wide (e.g., Area E).  The hierarchical model, on the other hand, gives a range of values that intuitively make sense when considering all the data.</p></li>
+</ul>
+</section>
+<section id="discussion">
+<h2>4. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">#</a></h2>
+<p>To summarize, the model uses probability theory to estimate differences between groups that accounts for group data, global data, sample size, skewness and positive-only chemical concentrations.  The resulting model is able to provide predicted means and uncertainty in the predicted means for all groups.  The predicted means for the groups exhibit “shrinkage” toward the global mean.  The Bayesian HDIs are smaller that frequentist confidence intervals for some groups and larger for other groups, depending on the sample size and variance for the groups, and the degree of shrinkage for each group.</p>
+<p>This technique was demonstrated for a simple estimation problem, but the technique can be extended for any dataset that has hierarchical structure.  For example, by performing multiple regression on both area and season.</p>
+<p>The next sections include the Bayesian model checking, including MCMC Diagnostics, Prior and posterior predictive checks, and sensitivity to alternative parameterizations.  These “appendices” were described in the previous notebook and draw from the common best practices in Bayesian analysis.</p>
+</section>
+<section id="a-mcmc-diagnostics">
+<h2>A.  MCMC Diagnostics<a class="headerlink" href="#a-mcmc-diagnostics" title="Permalink to this headline">#</a></h2>
+<p>As discussed in the previous notebook, the key diagnostic to show that the MCMC inference converged is the r_hat statistic, which measures the similarity between MCMC chains.  Based on the rule of thumb, the r_hat values should be all less than or equal to 1.01.</p>
+<p>The key diagnostic to show that the MCMC inference achieved sufficient resolution is the effective sample size (ESS) which is a measure of the MCMC samples adjusted for colinearity within the chain.  Based on a rule of thumb, the effective sample size should be greater than 400.</p>
+<p>The following table calculates the diagnostics for the MCMC inference showing that they are all within an appropriate range.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;area_mu&#39;</span><span class="p">,</span> <span class="s1">&#39;cv&#39;</span><span class="p">,</span> <span class="s1">&#39;area_mu_mu&#39;</span><span class="p">,</span> <span class="s1">&#39;area_mu_sigma&#39;</span><span class="p">]</span>
+<span class="n">az</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="n">var_names</span><span class="p">)[[</span><span class="s1">&#39;r_hat&#39;</span><span class="p">,</span> <span class="s1">&#39;ess_bulk&#39;</span><span class="p">,</span> <span class="s1">&#39;ess_tail&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: center;">
+      <th></th>
+      <th>r_hat</th>
+      <th>ess_bulk</th>
+      <th>ess_tail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>area_mu[0]</th>
+      <td>1.00</td>
+      <td>5049.0</td>
+      <td>2877.0</td>
+    </tr>
+    <tr>
+      <th>area_mu[1]</th>
+      <td>1.00</td>
+      <td>4876.0</td>
+      <td>2837.0</td>
+    </tr>
+    <tr>
+      <th>area_mu[2]</th>
+      <td>1.00</td>
+      <td>2051.0</td>
+      <td>1436.0</td>
+    </tr>
+    <tr>
+      <th>area_mu[3]</th>
+      <td>1.00</td>
+      <td>2452.0</td>
+      <td>2103.0</td>
+    </tr>
+    <tr>
+      <th>area_mu[4]</th>
+      <td>1.00</td>
+      <td>4177.0</td>
+      <td>2537.0</td>
+    </tr>
+    <tr>
+      <th>area_mu[5]</th>
+      <td>1.00</td>
+      <td>5189.0</td>
+      <td>2676.0</td>
+    </tr>
+    <tr>
+      <th>area_mu[6]</th>
+      <td>1.00</td>
+      <td>2429.0</td>
+      <td>2615.0</td>
+    </tr>
+    <tr>
+      <th>area_mu[7]</th>
+      <td>1.00</td>
+      <td>3544.0</td>
+      <td>2333.0</td>
+    </tr>
+    <tr>
+      <th>area_mu[8]</th>
+      <td>1.00</td>
+      <td>4859.0</td>
+      <td>3306.0</td>
+    </tr>
+    <tr>
+      <th>area_mu[9]</th>
+      <td>1.00</td>
+      <td>4423.0</td>
+      <td>3381.0</td>
+    </tr>
+    <tr>
+      <th>area_mu[10]</th>
+      <td>1.00</td>
+      <td>4472.0</td>
+      <td>2864.0</td>
+    </tr>
+    <tr>
+      <th>area_mu[11]</th>
+      <td>1.00</td>
+      <td>3855.0</td>
+      <td>2664.0</td>
+    </tr>
+    <tr>
+      <th>cv</th>
+      <td>1.00</td>
+      <td>5243.0</td>
+      <td>2610.0</td>
+    </tr>
+    <tr>
+      <th>area_mu_mu</th>
+      <td>1.00</td>
+      <td>4625.0</td>
+      <td>3023.0</td>
+    </tr>
+    <tr>
+      <th>area_mu_sigma</th>
+      <td>1.01</td>
+      <td>829.0</td>
+      <td>792.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Visual checks of the MCMC trace can help to identify potential issues in the MCMC sample.  The left-hand plots show the probability distributions for each variable and each chain to see if they coincide.  The right-hand plots show MCMC samples over time, which should look similar to white noise.  The MCMC sampler will also provide warning markers called “divergences” to help the practicioner to identify potential issues with the MCMC sample.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">az</span><span class="o">.</span><span class="n">plot_trace</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="n">var_names</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;MCMC Trace Plots&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/03_HierarchicalStormwater_49_0.png" src="_images/03_HierarchicalStormwater_49_0.png" />
+</div>
+</div>
+<p>Based on the visual check of the trace plots above, the chains have converged and the sample explored the sample space.  Depending on the exact MCMC run that finds its way onto the website, there may be 10 or so divergence warnings provided by the sampler.  However, based on the other diagnostics, it is safe to ignore the warnings from the MCMC sampler.</p>
+</section>
+<section id="b-prior-and-posterior-predictive-checks">
+<h2>B. Prior and Posterior Predictive Checks<a class="headerlink" href="#b-prior-and-posterior-predictive-checks" title="Permalink to this headline">#</a></h2>
+<section id="prior-predictive-check">
+<h3>Prior Predictive Check<a class="headerlink" href="#prior-predictive-check" title="Permalink to this headline">#</a></h3>
+<p>The prior predictive check helps to show that the selection of priors is in the range of the data and to identify if the prior is biasing the results.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">hierarchical_stormwater_nitrate</span><span class="p">:</span>
+    <span class="n">prior</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample_prior_predictive</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="n">plot_data</span><span class="p">[</span><span class="s1">&#39;Prior&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">prior_predictive</span><span class="p">[</span><span class="s1">&#39;C_modeled&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">missing_n</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">prior</span><span class="o">.</span><span class="n">prior_predictive</span><span class="p">[</span><span class="s1">&#39;C_modeled&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span> <span class="o">-</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+<span class="n">plot_data</span><span class="p">[</span><span class="s1">&#39;Observed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span><span class="o">*</span><span class="n">missing_n</span>
+
+<span class="n">plot_predictive</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">prior_posterior</span><span class="o">=</span><span class="s1">&#39;Prior&#39;</span><span class="p">,</span> <span class="n">fliersize</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior Predictive Compared to Observed&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/03_HierarchicalStormwater_55_0.png" src="_images/03_HierarchicalStormwater_55_0.png" />
+</div>
+</div>
+<p>Based on the plot above, the prior predictive is within the range of the data.  The prior predictive values are a narrow version of weakly informative adaptive priors.  Note that while the priors more/less match the shape of the entire dataset, they are the same for each area, therefore, the posterior picks up the difference between the areas.</p>
+</section>
+<section id="posterior-predictive-check">
+<h3>Posterior Predictive Check<a class="headerlink" href="#posterior-predictive-check" title="Permalink to this headline">#</a></h3>
+<p>The posterior predictive check is where the fit model is used to general simulated data to see if it has similar characteristics to the observed data.</p>
+<p>The following graphic presents the range of posterior predicted values compared to the observed concentrations.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">area_idxs</span>  <span class="o">=</span> <span class="n">obs_data</span><span class="o">.</span><span class="n">Area_idx</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">area_idxs</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="n">hierarchical_stormwater_nitrate</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s1">&#39;area_idx&#39;</span><span class="p">,</span> <span class="n">area_idxs</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">hierarchical_stormwater_nitrate</span><span class="p">:</span>
+    <span class="n">post_pred</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample_posterior_predictive</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div><div class="output text_html">
+<div>
+  <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [4000/4000 00:02&lt;00:00]
+</div>
+</div></div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">posterior_forest_area_plot</span><span class="p">(</span><span class="n">post_pred</span><span class="p">,</span> <span class="n">hierarchical_stormwater_nitrate</span><span class="p">,</span>
+            <span class="n">obs_data</span><span class="p">,</span> <span class="n">factor_var</span><span class="o">=</span><span class="s1">&#39;C_modeled&#39;</span><span class="p">,</span> <span class="n">observed_means_all</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> 
+             <span class="n">posterior_posterior_pred</span> <span class="o">=</span> <span class="s1">&#39;posterior_pred&#39;</span><span class="p">,</span> <span class="n">CIs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior Predictive Distributions and Observed Concentrations&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.0, 7.0)
+</pre></div>
+</div>
+<img alt="_images/03_HierarchicalStormwater_60_1.png" src="_images/03_HierarchicalStormwater_60_1.png" />
+</div>
+</div>
+<p>The posterior predictive distributions are reasonable when compared to the observed data.  The following histogram and box plots offer another view on the same information.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="n">plot_data</span><span class="p">[</span><span class="s1">&#39;Posterior Predictive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post_pred</span><span class="o">.</span><span class="n">posterior_predictive</span><span class="p">[</span><span class="s1">&#39;C_modeled&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">missing_n</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">plot_data</span><span class="p">[</span><span class="s1">&#39;Posterior Predictive&#39;</span><span class="p">])</span> <span class="o">-</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+<span class="n">plot_data</span><span class="p">[</span><span class="s1">&#39;Observed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span><span class="o">*</span><span class="n">missing_n</span>
+
+<span class="n">plot_predictive</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">prior_posterior</span><span class="o">=</span><span class="s1">&#39;Posterior Predictive&#39;</span><span class="p">,</span> <span class="n">fliersize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior Predictive Compared to Observed&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/03_HierarchicalStormwater_62_0.png" src="_images/03_HierarchicalStormwater_62_0.png" />
+</div>
+</div>
+<p>Note that the posterior predictive sampled all areas equally, whereas the observed data is biased by area (i.e., the observed data had different sample counts by area), so this is not an exact apples to apples comparison.  Nevertheless, the shape of the posterior is generally consistent with the data.</p>
+</section>
+</section>
+<section id="c-sensitivity-to-alternative-specifications">
+<h2>C.  Sensitivity to Alternative Specifications<a class="headerlink" href="#c-sensitivity-to-alternative-specifications" title="Permalink to this headline">#</a></h2>
+<p>The key modeling decisions that were made in developing the partial pooling model are the choice prior parameter values and the choice likelihood function.  Alternative models will be fit and compared below.</p>
+<section id="wider-prior-specification">
+<h3>Wider Prior Specification<a class="headerlink" href="#wider-prior-specification" title="Permalink to this headline">#</a></h3>
+<p>The priors were somewhat narrow, here is a model specified with wider prior parameter values:</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">hierarchical_stormwater_nitrate_wider_priors</span><span class="p">:</span>
+    <span class="c1"># Data</span>
+    <span class="n">C_obs</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">MutableData</span><span class="p">(</span><span class="s1">&#39;C_obs&#39;</span><span class="p">,</span> <span class="n">obs_data</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">area_idx</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">MutableData</span><span class="p">(</span><span class="s1">&#39;area_idx&#39;</span><span class="p">,</span> <span class="n">obs_data</span><span class="o">.</span><span class="n">Area_idx</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    
+    <span class="c1"># Hyperpriors</span>
+    <span class="n">area_mu_mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">TruncatedNormal</span><span class="p">(</span><span class="s1">&#39;area_mu_mu&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mean_data</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">mean_data</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">area_mu_sigma</span><span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Exponential</span><span class="p">(</span><span class="s1">&#39;area_mu_sigma&#39;</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span> 
+
+    <span class="c1"># Prior</span>
+    <span class="n">area_mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">TruncatedNormal</span><span class="p">(</span><span class="s1">&#39;area_mu&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">area_mu_mu</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">area_mu_sigma</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+                                 <span class="n">shape</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">areas</span><span class="p">))</span>
+
+    <span class="c1"># Prior coefficient of variation</span>
+    <span class="n">cv</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">TruncatedNormal</span><span class="p">(</span><span class="s1">&#39;cv&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">cv_data</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">cv_data</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Likelihood  </span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">area_mu</span><span class="p">[</span><span class="n">area_idx</span><span class="p">]</span>    <span class="c1"># Indexed mu for each datapoint</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">Gamma</span><span class="p">(</span><span class="s1">&#39;C_modeled&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">cv</span><span class="o">*</span><span class="n">mu</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">C_obs</span><span class="p">)</span>
+
+<span class="n">hierarchical_stormwater_nitrate_wider_priors</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}
+            \begin{array}{rcl}
+            \text{area_mu_mu} &amp;\sim &amp; \operatorname{TruncatedNormal}(0.849,~0.849,~0,~inf)\\\text{area_mu_sigma} &amp;\sim &amp; \operatorname{Exp}(f())\\\text{area_mu} &amp;\sim &amp; \operatorname{TruncatedNormal}(\text{area_mu_mu},~\text{area_mu_sigma},~0,~inf)\\\text{cv} &amp;\sim &amp; \operatorname{TruncatedNormal}(1.83,~1.83,~0,~inf)\\\text{C_modeled} &amp;\sim &amp; \operatorname{Gamma}(f(\text{area_mu},~\text{cv}),~f(\text{area_mu},~\text{cv}))
+            \end{array}
+            \end{split}\]</div>
+</div>
+</div>
+<p>Note that the wider prior for area_mu_sigma is <span class="math notranslate nohighlight">\(\lambda=0.5\)</span> compared to <span class="math notranslate nohighlight">\(\lambda=1.0\)</span>.</p>
+<div class="cell tag_hide-input tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">hierarchical_stormwater_nitrate_wider_priors</span><span class="p">:</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">target_accept</span><span class="o">=</span><span class="mf">.99</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [area_mu_mu, area_mu_sigma, area_mu, cv]
+</pre></div>
+</div>
+<div class="output text_html">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div><div class="output text_html">
+<div>
+  <progress value='8000' class='' max='8000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [8000/8000 01:28&lt;00:00 Sampling 4 chains, 4 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 114 seconds.
+There were 2 divergences after tuning. Increase `target_accept` or reparameterize.
+The acceptance probability does not match the target. It is 0.9535, but should be close to 0.99. Try to increase the number of tuning steps.
+There were 2 divergences after tuning. Increase `target_accept` or reparameterize.
+The acceptance probability does not match the target. It is 0.9651, but should be close to 0.99. Try to increase the number of tuning steps.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">posterior_forest_area_plot</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span>
+            <span class="n">hierarchical_stormwater_nitrate</span><span class="p">,</span>
+            <span class="n">obs_data</span><span class="p">,</span> <span class="n">factor_var</span><span class="o">=</span><span class="s1">&#39;area_mu&#39;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Modeled and Observed Means for Model with Wider Priors&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/03_HierarchicalStormwater_71_0.png" src="_images/03_HierarchicalStormwater_71_0.png" />
+</div>
+</div>
+<p>Visually, the results are the same as those above.</p>
+</section>
+<section id="comparison-to-different-likelihood-functions">
+<h3>Comparison to Different Likelihood Functions<a class="headerlink" href="#comparison-to-different-likelihood-functions" title="Permalink to this headline">#</a></h3>
+<p>The base model has a gamma likelihood to approximate the skewed distibution in the data.  Let’s compare to two other common likelihoods, normal and lognormal.</p>
+<section id="normal-likelihood">
+<h4>Normal Likelihood<a class="headerlink" href="#normal-likelihood" title="Permalink to this headline">#</a></h4>
+<p>The normal likelihood model will allow negative values, and the error term will be homoskedastic (constant regardless of mu) for consistency with the most common normal likelihood parameterization.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">hierarchical_stormwater_nitrate_normal_like</span><span class="p">:</span>
+    <span class="c1"># Data</span>
+    <span class="n">C_obs</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">MutableData</span><span class="p">(</span><span class="s1">&#39;C_obs&#39;</span><span class="p">,</span> <span class="n">obs_data</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">area_idx</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">MutableData</span><span class="p">(</span><span class="s1">&#39;area_idx&#39;</span><span class="p">,</span> <span class="n">obs_data</span><span class="o">.</span><span class="n">Area_idx</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    
+    <span class="c1"># Hyperpriors</span>
+    <span class="n">area_mu_mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;area_mu_mu&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mean_data</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">mean_data</span><span class="p">)</span>
+    <span class="n">area_mu_sigma</span><span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Exponential</span><span class="p">(</span><span class="s1">&#39;area_mu_sigma&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> 
+
+    <span class="c1"># Prior</span>
+    <span class="n">area_mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;area_mu&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">area_mu_mu</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">area_mu_sigma</span><span class="p">,</span> 
+                                 <span class="n">shape</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">areas</span><span class="p">))</span>
+
+    <span class="c1"># Prior coefficient of variation</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">TruncatedNormal</span><span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> 
+                        <span class="n">mu</span><span class="o">=</span><span class="n">cv_data</span><span class="o">*</span><span class="n">mean_data</span><span class="p">,</span> 
+                        <span class="n">sigma</span><span class="o">=</span><span class="n">cv_data</span><span class="o">*</span><span class="n">mean_data</span><span class="p">,</span> 
+                        <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Likelihood  </span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">area_mu</span><span class="p">[</span><span class="n">area_idx</span><span class="p">]</span>    <span class="c1"># Indexed mu for each datapoint</span>
+    <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;C_modeled&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">C_obs</span><span class="p">)</span>
+
+<span class="n">hierarchical_stormwater_nitrate_normal_like</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}
+            \begin{array}{rcl}
+            \text{area_mu_mu} &amp;\sim &amp; \operatorname{N}(0.849,~0.849)\\\text{area_mu_sigma} &amp;\sim &amp; \operatorname{Exp}(f())\\\text{area_mu} &amp;\sim &amp; \operatorname{N}(\text{area_mu_mu},~\text{area_mu_sigma})\\\text{sigma} &amp;\sim &amp; \operatorname{TruncatedNormal}(0.778,~0.778,~0,~inf)\\\text{C_modeled} &amp;\sim &amp; \operatorname{N}(f(\text{area_mu}),~\text{sigma})
+            \end{array}
+            \end{split}\]</div>
+</div>
+</div>
+<div class="cell tag_hide-input tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">hierarchical_stormwater_nitrate_normal_like</span><span class="p">:</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">target_accept</span><span class="o">=</span><span class="mf">.99</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [area_mu_mu, area_mu_sigma, area_mu, sigma]
+</pre></div>
+</div>
+<div class="output text_html">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div><div class="output text_html">
+<div>
+  <progress value='8000' class='' max='8000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [8000/8000 01:02&lt;00:00 Sampling 4 chains, 1 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 91 seconds.
+There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">posterior_forest_area_plot</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> 
+            <span class="n">hierarchical_stormwater_nitrate_normal_like</span><span class="p">,</span>
+            <span class="n">obs_data</span><span class="p">,</span> <span class="n">factor_var</span><span class="o">=</span><span class="s1">&#39;area_mu&#39;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Modeled and Observed Means for Model with Normal Likelihood&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/03_HierarchicalStormwater_77_0.png" src="_images/03_HierarchicalStormwater_77_0.png" />
+</div>
+</div>
+<p>The normal likelihood model gives almost identical results for the posterior means.  However, we expect that the posterior predictive will give data of a different shape.  Let’s see if that is the case.</p>
+<div class="cell tag_hide-input tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hierarchical_stormwater_nitrate_normal_like</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s1">&#39;area_idx&#39;</span><span class="p">,</span> <span class="n">area_idxs</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">hierarchical_stormwater_nitrate_normal_like</span><span class="p">:</span>
+    <span class="n">post_pred</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample_posterior_predictive</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div><div class="output text_html">
+<div>
+  <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [4000/4000 00:01&lt;00:00]
+</div>
+</div></div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="n">plot_data</span><span class="p">[</span><span class="s1">&#39;Posterior Predictive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post_pred</span><span class="o">.</span><span class="n">posterior_predictive</span><span class="p">[</span><span class="s1">&#39;C_modeled&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">missing_n</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">plot_data</span><span class="p">[</span><span class="s1">&#39;Posterior Predictive&#39;</span><span class="p">])</span> <span class="o">-</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+<span class="n">plot_data</span><span class="p">[</span><span class="s1">&#39;Observed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span><span class="o">*</span><span class="n">missing_n</span>
+
+<span class="n">plot_predictive</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">prior_posterior</span><span class="o">=</span><span class="s1">&#39;Posterior Predictive&#39;</span><span class="p">,</span> 
+                <span class="n">fliersize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">conc_limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span>
+                <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior Predictive Compared to Observed - Normal Likelihood&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/03_HierarchicalStormwater_80_0.png" src="_images/03_HierarchicalStormwater_80_0.png" />
+</div>
+</div>
+<p>As expected, the posterior predictive produces negative values that are not consistent with the distribution of the data, and a smaller tail on the right side of the distribution.  In this situation, the normal likelihood was adequate for estimating the posterior parameter mean values, but not accurate for simulating data.</p>
+</section>
+<section id="lognormal-likelihood">
+<h4>LogNormal Likelihood<a class="headerlink" href="#lognormal-likelihood" title="Permalink to this headline">#</a></h4>
+<p>It is common to lognormalize concentration data prior to analysis.  This can also be achieved by using the lognormal distribution in Pymc.  In this case, we’ll lognormalize the data and use the normal distribution model.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">hierarchical_stormwater_nitrate_normal_like_log_data</span><span class="p">:</span>
+    <span class="c1"># Data</span>
+    <span class="n">C_obs_log</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">MutableData</span><span class="p">(</span><span class="s1">&#39;C_obs_log&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+    <span class="n">area_idx</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">MutableData</span><span class="p">(</span><span class="s1">&#39;area_idx&#39;</span><span class="p">,</span> <span class="n">obs_data</span><span class="o">.</span><span class="n">Area_idx</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    
+    <span class="c1"># Hyperpriors</span>
+    <span class="n">area_mu_mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;area_mu_mu&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">area_mu_sigma</span><span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Exponential</span><span class="p">(</span><span class="s1">&#39;area_mu_sigma&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> 
+
+    <span class="c1"># Prior</span>
+    <span class="n">area_mu</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;area_mu&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">area_mu_mu</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">area_mu_sigma</span><span class="p">,</span> 
+                                 <span class="n">shape</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">areas</span><span class="p">))</span>
+
+    <span class="c1"># Prior sigma</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">TruncatedNormal</span><span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="n">sigma</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="n">pm</span><span class="o">.</span><span class="n">Deterministic</span><span class="p">(</span><span class="s1">&#39;area_mu_natural_units&#39;</span><span class="p">,</span> <span class="n">pm</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">area_mu</span> <span class="o">+</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="c1"># Likelihood  </span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">area_mu</span><span class="p">[</span><span class="n">area_idx</span><span class="p">]</span>    <span class="c1"># Indexed mu for each datapoint</span>
+    <span class="n">C_modeled_log</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;C_modeled_log&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">C_obs_log</span><span class="p">)</span>
+
+<span class="n">hierarchical_stormwater_nitrate_normal_like_log_data</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}
+            \begin{array}{rcl}
+            \text{area_mu_mu} &amp;\sim &amp; \operatorname{N}(0,~5)\\\text{area_mu_sigma} &amp;\sim &amp; \operatorname{Exp}(f())\\\text{area_mu} &amp;\sim &amp; \operatorname{N}(\text{area_mu_mu},~\text{area_mu_sigma})\\\text{sigma} &amp;\sim &amp; \operatorname{TruncatedNormal}(1,~5,~0,~inf)\\\text{area_mu_natural_units} &amp;\sim &amp; \operatorname{Deterministic}(f(\text{area_mu},~\text{sigma}))\\\text{C_modeled_log} &amp;\sim &amp; \operatorname{N}(f(\text{area_mu}),~\text{sigma})
+            \end{array}
+            \end{split}\]</div>
+</div>
+</div>
+<div class="cell tag_hide-input tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">hierarchical_stormwater_nitrate_normal_like_log_data</span><span class="p">:</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">target_accept</span><span class="o">=</span><span class="mf">.99</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Auto-assigning NUTS sampler...
+Initializing NUTS using jitter+adapt_diag...
+Multiprocess sampling (4 chains in 4 jobs)
+NUTS: [area_mu_mu, area_mu_sigma, area_mu, sigma]
+</pre></div>
+</div>
+<div class="output text_html">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div><div class="output text_html">
+<div>
+  <progress value='8000' class='' max='8000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [8000/8000 00:58&lt;00:00 Sampling 4 chains, 0 divergences]
+</div>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 84 seconds.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">posterior_forest_area_plot</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> 
+            <span class="n">hierarchical_stormwater_nitrate_normal_like_log_data</span><span class="p">,</span>
+            <span class="n">obs_data</span><span class="p">,</span> <span class="n">factor_var</span><span class="o">=</span><span class="s1">&#39;area_mu_natural_units&#39;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Modeled and Observed Means for Model with LogNormal Likelihood&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/03_HierarchicalStormwater_85_0.png" src="_images/03_HierarchicalStormwater_85_0.png" />
+</div>
+</div>
+<p>There are some counter-intuitive results.  Most areas show shrinkage, except Area I, which has predictions that are higher than the observed mean.  A posterior predictive check (with concentrations converted back to natural units) will help us to figure out why.</p>
+<div class="cell tag_hide-input tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hierarchical_stormwater_nitrate_normal_like_log_data</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s1">&#39;area_idx&#39;</span><span class="p">,</span> <span class="n">area_idxs</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">hierarchical_stormwater_nitrate_normal_like_log_data</span><span class="p">:</span>
+    <span class="n">post_pred</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample_posterior_predictive</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div><div class="output text_html">
+<div>
+  <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [4000/4000 00:01&lt;00:00]
+</div>
+</div></div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">posterior_forest_area_plot</span><span class="p">(</span><span class="n">post_pred</span><span class="p">,</span> <span class="n">hierarchical_stormwater_nitrate_normal_like_log_data</span><span class="p">,</span>
+            <span class="n">obs_data</span><span class="p">,</span> <span class="n">factor_var</span><span class="o">=</span><span class="s1">&#39;C_modeled_log&#39;</span><span class="p">,</span> <span class="n">observed_means_all</span> <span class="o">=</span> <span class="s1">&#39;all_medians&#39;</span><span class="p">,</span> 
+            <span class="n">posterior_posterior_pred</span> <span class="o">=</span> <span class="s1">&#39;posterior_pred_log&#39;</span><span class="p">,</span> <span class="n">CIs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Posterior Predictive Distributions and Observed Concentrations LogNormal Likelihood&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.0, 7.0)
+</pre></div>
+</div>
+<img alt="_images/03_HierarchicalStormwater_88_1.png" src="_images/03_HierarchicalStormwater_88_1.png" />
+</div>
+</div>
+<p>In the chart above, I have plotted the group medians as black plusses.  Notice that the median for Area I is well above that of the other areas.  Recall that the lognormal distribution fits the geometric mean (which maps onto the median), rather than the arithmetic mean of the data.  Therefore, the lognormal distribution not providing a good fit for Area I, which is less skewed than data for other areas (i.e., the median is closer to the mean).</p>
+<p>While the lognormal distribution likelihood does not work well with this dataset, this result does beg the question about why Area I is less skewed than the other areas and how that might impact the analysis.  But this is beyond the scope of this analysis.</p>
+</section>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">#</a></h2>
+<p>This notebook runs through a heirarchical regression model including the components for a complete Bayesian analysis, as outlined in Notebook #2.  The next notebook will recast a historical environmental analysis in a Bayesian wrapper.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="02_DocumentingBayes.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">EnvBayes Notebook #2. Documenting a Bayesian Analysis</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="04_Lead210_Master.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">EnvBayes Notebook #4.  Bayesian Sediment Geochronology</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Greg Brunkhorst<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
