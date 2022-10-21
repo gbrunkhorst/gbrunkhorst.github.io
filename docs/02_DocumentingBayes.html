@@ -206,7 +206,7 @@ title="Toggle navigation"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="https://mybinder.org/v2/gh/gbrunkhorst/Website/HEAD/v2/gh/gbrunkhorst/Website/master?urlpath=lab/tree/02_DocumentingBayes.ipynb"
+        <a href="https://mybinder.org/v2/gh/gbrunkhorst/Website/master?urlpath=lab/tree/02_DocumentingBayes.ipynb"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -865,8 +865,171 @@ title="Print to PDF"
 <span class="kn">import</span> <span class="nn">arviz</span> <span class="k">as</span> <span class="nn">az</span>
 <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.colheader_justify&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">)</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/Straight_Georgia_BaP_PSAMP_Data.csv&#39;</span><span class="p">)</span>
-<span class="n">data</span><span class="o">.</span><span class="n">Date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">Date</span><span class="p">)</span>
+<span class="n">folder</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/gbrunkhorst/Website/main/data/&#39;</span>
+<span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;Straight_Georgia_BaP_PSAMP_Data.csv&#39;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">folder</span> <span class="o">+</span> <span class="n">file</span><span class="p">)</span>
+<span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: center;">
+      <th></th>
+      <th>Location_ID</th>
+      <th>Date</th>
+      <th>Matrix</th>
+      <th>Upper_Depth</th>
+      <th>Lower_Depth</th>
+      <th>Depth_Unit</th>
+      <th>Chemical</th>
+      <th>Concentration</th>
+      <th>Result_Unit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>PSAMP_LT-3</td>
+      <td>4/20/2000</td>
+      <td>Sediment Surface</td>
+      <td>0</td>
+      <td>3</td>
+      <td>cm</td>
+      <td>Benzo(a)pyrene</td>
+      <td>45.00</td>
+      <td>ug/Kg</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>PSAMP_LT-3</td>
+      <td>4/22/2005</td>
+      <td>Sediment Surface</td>
+      <td>0</td>
+      <td>3</td>
+      <td>cm</td>
+      <td>Benzo(a)pyrene</td>
+      <td>20.00</td>
+      <td>ug/Kg</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>PSAMP_LT-3</td>
+      <td>4/22/2005</td>
+      <td>Sediment Surface</td>
+      <td>0</td>
+      <td>3</td>
+      <td>cm</td>
+      <td>Benzo(a)pyrene</td>
+      <td>21.00</td>
+      <td>ug/Kg</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>PSAMP_LT-3</td>
+      <td>4/22/2005</td>
+      <td>Sediment Surface</td>
+      <td>0</td>
+      <td>3</td>
+      <td>cm</td>
+      <td>Benzo(a)pyrene</td>
+      <td>19.00</td>
+      <td>ug/Kg</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>PSAMP_LT-3</td>
+      <td>4/25/2010</td>
+      <td>Sediment Surface</td>
+      <td>0</td>
+      <td>3</td>
+      <td>cm</td>
+      <td>Benzo(a)pyrene</td>
+      <td>9.84</td>
+      <td>ug/Kg</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>PSAMP_LT-3</td>
+      <td>4/25/2010</td>
+      <td>Sediment Surface</td>
+      <td>0</td>
+      <td>3</td>
+      <td>cm</td>
+      <td>Benzo(a)pyrene</td>
+      <td>10.10</td>
+      <td>ug/Kg</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>PSAMP_LT-3</td>
+      <td>4/25/2010</td>
+      <td>Sediment Surface</td>
+      <td>0</td>
+      <td>3</td>
+      <td>cm</td>
+      <td>Benzo(a)pyrene</td>
+      <td>12.30</td>
+      <td>ug/Kg</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>PSAMP_LT-3</td>
+      <td>4/28/2016</td>
+      <td>Sediment Surface</td>
+      <td>0</td>
+      <td>3</td>
+      <td>cm</td>
+      <td>Benzo(a)pyrene</td>
+      <td>9.16</td>
+      <td>ug/Kg</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>PSAMP_LT-3</td>
+      <td>4/28/2016</td>
+      <td>Sediment Surface</td>
+      <td>0</td>
+      <td>3</td>
+      <td>cm</td>
+      <td>Benzo(a)pyrene</td>
+      <td>6.62</td>
+      <td>ug/Kg</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>PSAMP_LT-3</td>
+      <td>4/28/2016</td>
+      <td>Sediment Surface</td>
+      <td>0</td>
+      <td>3</td>
+      <td>cm</td>
+      <td>Benzo(a)pyrene</td>
+      <td>10.50</td>
+      <td>ug/Kg</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">Date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">Date</span><span class="p">)</span>
 <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Date</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 <span class="n">data</span><span class="o">.</span><span class="n">Year</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Year</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">Year</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
 
@@ -879,7 +1042,7 @@ title="Print to PDF"
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_16_0.png" src="_images/02_DocumentingBayes_16_0.png" />
+<img alt="_images/02_DocumentingBayes_17_0.png" src="_images/02_DocumentingBayes_17_0.png" />
 </div>
 </div>
 </section>
@@ -1002,7 +1165,7 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_24_0.png" src="_images/02_DocumentingBayes_24_0.png" />
+<img alt="_images/02_DocumentingBayes_25_0.png" src="_images/02_DocumentingBayes_25_0.png" />
 </div>
 </div>
 <p>For this analysis, we will use a normally distributed likelihood centered on the SEDCAM model prediction and with a standard deviation determined by the model.  A normal distribution is used because the data do not appear highly skewed and outliers do not appear to be present.  The normal distribution is also consistent with the common least-squares approach to model fitting.</p>
@@ -1046,12 +1209,14 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
 <p>Pymc provides a graphical representation of the model as well.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pm</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">sedcam_bayes</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># If graphviz is not installed, and you want the graph visual, uncomment and run the conda install</span>
+<span class="c1"># !conda install -c conda-forge python-graphviz -y</span>
+<span class="n">pm</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">sedcam_bayes</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_29_0.svg" src="_images/02_DocumentingBayes_29_0.svg" /></div>
+<img alt="_images/02_DocumentingBayes_30_0.svg" src="_images/02_DocumentingBayes_30_0.svg" /></div>
 </div>
 </section>
 </section>
@@ -1111,7 +1276,7 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_34_0.png" src="_images/02_DocumentingBayes_34_0.png" />
+<img alt="_images/02_DocumentingBayes_35_0.png" src="_images/02_DocumentingBayes_35_0.png" />
 </div>
 </div>
 <p>The range of predictions is reasonable based on the data.  We can see how the predictions become less certain the further we extrapolate into the future, as we go beyond the observed data.  Now we will look at the probability distributions for each of the parameters.</p>
@@ -1136,7 +1301,7 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_36_0.png" src="_images/02_DocumentingBayes_36_0.png" />
+<img alt="_images/02_DocumentingBayes_37_0.png" src="_images/02_DocumentingBayes_37_0.png" />
 </div>
 </div>
 <p>The plots present the posterior probability distributions for each parameter, highlighting the mean and the 90% highest density interval.</p>
@@ -1177,9 +1342,9 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
     <tr>
       <th>C0 - initial concentration (ug/kg)</th>
       <td>45.0</td>
-      <td>1.9</td>
+      <td>2.0</td>
       <td>42.0</td>
-      <td>48.0</td>
+      <td>48.2</td>
     </tr>
     <tr>
       <th>Cd - depositing concentration (ug/kg)</th>
@@ -1199,15 +1364,15 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
       <th>B - bioactive mixing depth (cm)</th>
       <td>10.0</td>
       <td>1.0</td>
-      <td>8.4</td>
-      <td>11.6</td>
+      <td>8.5</td>
+      <td>11.8</td>
     </tr>
     <tr>
       <th>Sigma (error) (ug/kg)</th>
       <td>1.8</td>
       <td>0.6</td>
-      <td>0.9</td>
-      <td>2.6</td>
+      <td>1.0</td>
+      <td>2.7</td>
     </tr>
   </tbody>
 </table>
@@ -1223,7 +1388,7 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_40_0.png" src="_images/02_DocumentingBayes_40_0.png" />
+<img alt="_images/02_DocumentingBayes_41_0.png" src="_images/02_DocumentingBayes_41_0.png" />
 </div>
 </div>
 <p>Yes it did!  This information could be useful in understanding uncertainties in the analysis.  For example, if we are skeptical of very high values of <span class="math notranslate nohighlight">\(R\)</span>, then we should likewise be skeptical of high values of <span class="math notranslate nohighlight">\(C_d\)</span>.</p>
@@ -1262,7 +1427,7 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
 </div><div class="output text_html">
 <div>
   <progress value='4000' class='' max='4000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [4000/4000 00:01&lt;00:00]
+  100.00% [4000/4000 00:00&lt;00:00]
 </div>
 </div></div>
 </div>
@@ -1287,7 +1452,7 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_45_0.png" src="_images/02_DocumentingBayes_45_0.png" />
+<img alt="_images/02_DocumentingBayes_46_0.png" src="_images/02_DocumentingBayes_46_0.png" />
 </div>
 </div>
 <p>These results make intuitive sense.  The mean of both distributions is the same, and the range in sample concentrations would be wider than the range in underlying mean concentrations.</p>
@@ -1314,7 +1479,7 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_51_0.png" src="_images/02_DocumentingBayes_51_0.png" />
+<img alt="_images/02_DocumentingBayes_52_0.png" src="_images/02_DocumentingBayes_52_0.png" />
 </div>
 </div>
 <p>The left column of the trace plots show the final probability distribution for each chain.  As long as they line up fairly well, then the MCMC sampler “converged.”  <em>Bayesian Modeling and Computation in Python</em> <a class="reference external" href="https://bayesiancomputationbook.com/markdown/chp_02.html">Section 2.4.4</a> shows some examples of trace plots for inferences that have not converged.</p>
@@ -1352,23 +1517,23 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
   <tbody>
     <tr>
       <th>C0</th>
-      <td>1.00</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>Cd</th>
-      <td>1.00</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>R</th>
-      <td>1.00</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>B</th>
-      <td>1.00</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>sigma</th>
-      <td>1.01</td>
+      <td>1.0</td>
     </tr>
   </tbody>
 </table>
@@ -1412,28 +1577,28 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
   <tbody>
     <tr>
       <th>C0</th>
-      <td>2114.0</td>
-      <td>1747.0</td>
+      <td>2533.0</td>
+      <td>1813.0</td>
     </tr>
     <tr>
       <th>Cd</th>
-      <td>1670.0</td>
-      <td>1077.0</td>
+      <td>1960.0</td>
+      <td>1167.0</td>
     </tr>
     <tr>
       <th>R</th>
-      <td>1447.0</td>
-      <td>1403.0</td>
+      <td>1740.0</td>
+      <td>2294.0</td>
     </tr>
     <tr>
       <th>B</th>
-      <td>2262.0</td>
-      <td>2089.0</td>
+      <td>2740.0</td>
+      <td>2176.0</td>
     </tr>
     <tr>
       <th>sigma</th>
-      <td>1604.0</td>
-      <td>1596.0</td>
+      <td>1552.0</td>
+      <td>2134.0</td>
     </tr>
   </tbody>
 </table>
@@ -1473,7 +1638,7 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_62_0.png" src="_images/02_DocumentingBayes_62_0.png" />
+<img alt="_images/02_DocumentingBayes_63_0.png" src="_images/02_DocumentingBayes_63_0.png" />
 </div>
 </div>
 <p>The priors are generally in the ballpark, but much higher than the posterior. Therefore, if the priors are nudging the results in a particular direction, they are nudging the results toward higher concentrations, more variance, and less decline in concentration.</p>
@@ -1510,7 +1675,7 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_65_0.png" src="_images/02_DocumentingBayes_65_0.png" />
+<img alt="_images/02_DocumentingBayes_66_0.png" src="_images/02_DocumentingBayes_66_0.png" />
 </div>
 </div>
 <p>Based on this visual check, the model is generating reasonable data.</p>
@@ -1547,7 +1712,7 @@ C_t = C_d(1-e^{-Rt/B}) + C_0e^{-Rt/B}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_67_0.png" src="_images/02_DocumentingBayes_67_0.png" />
+<img alt="_images/02_DocumentingBayes_68_0.png" src="_images/02_DocumentingBayes_68_0.png" />
 </div>
 </div>
 <p>The left-hand plot shows that the model is not systematically biased relative to the magnitude of the prediction.  The right-hand plot shows that the posterior predictive distribution is a reasonable shape compared to the observed data.  The posterior predictive distribution is systematically wider than the observed data based on the plot on the right, but this is reasonable for a small dataset (n=10).</p>
@@ -1625,9 +1790,9 @@ NUTS: [Cd, C0, R, B, sigma]
 </div><div class="output text_html">
 <div>
   <progress value='8000' class='' max='8000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [8000/8000 00:55&lt;00:00 Sampling 4 chains, 0 divergences]
+  100.00% [8000/8000 00:26&lt;00:00 Sampling 4 chains, 0 divergences]
 </div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 123 seconds.
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 54 seconds.
 </pre></div>
 </div>
 </div>
@@ -1660,7 +1825,7 @@ NUTS: [Cd, C0, R, B, sigma]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_73_0.png" src="_images/02_DocumentingBayes_73_0.png" />
+<img alt="_images/02_DocumentingBayes_74_0.png" src="_images/02_DocumentingBayes_74_0.png" />
 </div>
 </div>
 <p>Informative priors are closer to the observed trend and are less biased than the weakly informative priors.  Now, let’s compare posteriors:</p>
@@ -1723,13 +1888,13 @@ NUTS: [Cd, C0, R, B, sigma]
       <th>C0 - initial concentration (ug/kg)</th>
       <td>45.0</td>
       <td>42.0</td>
-      <td>48.0</td>
+      <td>48.2</td>
       <td>45.2</td>
-      <td>42.6</td>
-      <td>48.0</td>
-      <td>0.5</td>
-      <td>1.4</td>
-      <td>-0.0</td>
+      <td>42.5</td>
+      <td>47.9</td>
+      <td>0.3</td>
+      <td>1.2</td>
+      <td>-0.6</td>
     </tr>
     <tr>
       <th>Cd - depositing concentration (ug/kg)</th>
@@ -1738,10 +1903,10 @@ NUTS: [Cd, C0, R, B, sigma]
       <td>9.4</td>
       <td>7.4</td>
       <td>5.6</td>
-      <td>9.4</td>
-      <td>2.6</td>
-      <td>11.9</td>
-      <td>0.4</td>
+      <td>9.3</td>
+      <td>2.3</td>
+      <td>10.8</td>
+      <td>-1.3</td>
     </tr>
     <tr>
       <th>R - deposition rate (cm/yr)</th>
@@ -1751,33 +1916,33 @@ NUTS: [Cd, C0, R, B, sigma]
       <td>2.3</td>
       <td>1.7</td>
       <td>2.8</td>
-      <td>1.2</td>
-      <td>2.8</td>
       <td>0.9</td>
+      <td>3.3</td>
+      <td>-0.6</td>
     </tr>
     <tr>
       <th>B - bioactive mixing depth (cm)</th>
       <td>10.0</td>
+      <td>8.5</td>
+      <td>11.8</td>
+      <td>10.0</td>
       <td>8.4</td>
       <td>11.6</td>
-      <td>9.9</td>
-      <td>8.4</td>
-      <td>11.6</td>
-      <td>-0.3</td>
-      <td>-0.2</td>
-      <td>0.1</td>
+      <td>-0.1</td>
+      <td>-0.9</td>
+      <td>-1.3</td>
     </tr>
     <tr>
       <th>Sigma (error) (ug/kg)</th>
       <td>1.8</td>
-      <td>0.9</td>
-      <td>2.6</td>
+      <td>1.0</td>
+      <td>2.7</td>
       <td>1.7</td>
       <td>1.0</td>
       <td>2.3</td>
-      <td>-8.8</td>
-      <td>2.2</td>
-      <td>-11.4</td>
+      <td>-9.7</td>
+      <td>-4.0</td>
+      <td>-15.1</td>
     </tr>
   </tbody>
 </table>
@@ -1825,7 +1990,7 @@ NUTS: [Cd, C0, R, B, sigma]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_80_0.svg" src="_images/02_DocumentingBayes_80_0.svg" /></div>
+<img alt="_images/02_DocumentingBayes_81_0.svg" src="_images/02_DocumentingBayes_81_0.svg" /></div>
 </div>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
@@ -1861,9 +2026,9 @@ NUTS: [slope, C0, sigma]
 </div><div class="output text_html">
 <div>
   <progress value='8000' class='' max='8000' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  100.00% [8000/8000 00:36&lt;00:00 Sampling 4 chains, 0 divergences]
+  100.00% [8000/8000 00:28&lt;00:00 Sampling 4 chains, 0 divergences]
 </div>
-</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 157 seconds.
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sampling 4 chains for 1_000 tune and 1_000 draw iterations (4_000 + 4_000 draws total) took 64 seconds.
 </pre></div>
 </div>
 </div>
@@ -1887,7 +2052,7 @@ NUTS: [slope, C0, sigma]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/02_DocumentingBayes_82_0.png" src="_images/02_DocumentingBayes_82_0.png" />
+<img alt="_images/02_DocumentingBayes_83_0.png" src="_images/02_DocumentingBayes_83_0.png" />
 </div>
 </div>
 <p>We can see how the linear model is a poor fit to the data, and would predict negative concentrations in year 30!</p>
@@ -1900,9 +2065,9 @@ NUTS: [slope, C0, sigma]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\greg\.conda\envs\pymc_env\lib\site-packages\arviz\stats\stats.py:812: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\greg\.conda\envs\pymc_env\lib\site-packages\arviz\stats\stats.py:812: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
   warnings.warn(
-C:\Users\greg\.conda\envs\pymc_env\lib\site-packages\arviz\stats\stats.py:812: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
+c:\Users\greg\.conda\envs\pymc_env\lib\site-packages\arviz\stats\stats.py:812: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
   warnings.warn(
 </pre></div>
 </div>
@@ -1936,14 +2101,14 @@ C:\Users\greg\.conda\envs\pymc_env\lib\site-packages\arviz\stats\stats.py:812: U
       <td>0</td>
       <td>1.0</td>
       <td>-21.1</td>
-      <td>3.0</td>
+      <td>2.9</td>
     </tr>
     <tr>
       <th>Linear</th>
       <td>1</td>
       <td>0.0</td>
-      <td>-36.9</td>
-      <td>4.4</td>
+      <td>-36.3</td>
+      <td>3.8</td>
     </tr>
   </tbody>
 </table>
